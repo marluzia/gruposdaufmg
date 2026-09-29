@@ -1,24 +1,22 @@
-/* =========================================================================
-   Grupos da UFMG
-   Uma página só, sem dependências: abre rápido em 4G, que é como quase
-   todo mundo vai chegar aqui — por um link no WhatsApp.
-   ========================================================================= */
+/* ═══════════════════════════════════════════════════════════════════════════
+   A APARÊNCIA DA PÁGINA
+
+   As cores estão todas no bloco :root logo abaixo. Trocar uma cor ali muda
+   a página inteira de uma vez.
+   ═══════════════════════════════════════════════════════════════════════════ */
 
 :root {
   /* Entardecer sobre a serra: é a cor que Belo Horizonte tem às seis da
      tarde, e conversa com o terracota e o verde da CEDER. */
   --noite: #1F3347;
-  --crepusculo: #6B5B7B;
   --terracota: #B24232;
   --ambar: #C08A1E;
-  --ambar-claro: #E8A55F;
   --verde: #2E7D53;
-  --verde-escuro: #24342B;
 
   --tinta: #17201C;
   --tinta-fraca: #5F6862;
   --papel: #FFFFFF;
-  --fundo: #ffffff;
+  --fundo: #e2dad365;
   --regua: #E2DCCC;
 
   --sombra: 0 1px 2px rgba(23, 32, 28, .06), 0 6px 18px rgba(23, 32, 28, .07);
@@ -56,9 +54,10 @@ a { color: inherit; }
   padding: 0 16px;
 }
 
-/* ---------------------------------------------------------------- capa --- */
+/* ------------------------------------------------------------------ capa --- */
 
 .tarja {
+  margin: 0;
   background: var(--noite);
   color: #E9E4D6;
   text-align: center;
@@ -69,10 +68,7 @@ a { color: inherit; }
   padding: .5rem 1rem;
 }
 
-.capa {
-  position: relative;
-  padding-bottom: 0;
-}
+.capa { position: relative; }
 
 .cena {
   display: block;
@@ -88,10 +84,6 @@ a { color: inherit; }
 @keyframes atravessa {
   from { transform: translateX(-260px); }
   to   { transform: translateX(1420px); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .carro-a, .carro-b { animation: none; }
 }
 
 .marca {
@@ -134,21 +126,70 @@ a { color: inherit; }
   padding: .25rem .7rem;
 }
 
-/* -------------------------------------------------------------- anúncio --- */
+/* ----------------------------------------------------------- diagnóstico --- */
 
-.anuncio {
-  margin: 1.6rem 0 0;
-  background: var(--noite);
-  color: #F2EEE2;
-  border-radius: 16px;
-  padding: 1.15rem 1.15rem 1.25rem;
-  box-shadow: var(--sombra);
-  position: relative;
-  overflow: hidden;
+/* O aviso de erro de digitação. Aparece só para quem está editando: no
+   arquivo aberto do computador ou num servidor de testes. */
+.diagnostico {
+  margin-top: 1.4rem;
+  background: #FFF6E8;
+  border: 2px solid var(--ambar);
+  border-radius: 12px;
+  padding: 1rem 1.1rem;
+  font-size: .9rem;
+  line-height: 1.5;
 }
 
-/* Um telhado de canto: assina a CEDER sem repetir o logo inteiro. */
-.anuncio::after {
+.diagnostico strong { font-size: 1rem; }
+
+.diagnostico__arquivo {
+  margin: .9rem 0 .2rem;
+  font-family: var(--mono);
+  font-size: .78rem;
+  color: var(--terracota);
+}
+
+.diagnostico ul { margin: 0; padding-left: 1.2rem; }
+.diagnostico li { margin-bottom: .35rem; }
+
+.diagnostico__nota {
+  margin: .9rem 0 0;
+  font-size: .78rem;
+  color: var(--tinta-fraca);
+}
+
+/* ------------------------------------------------------------- parceiros --- */
+
+.secao-parceiros { margin-top: 1.6rem; }
+
+/* O carrossel desliza com o dedo pelo próprio navegador: scroll-snap faz o
+   trabalho que normalmente daria muito JavaScript, e sai mais suave. */
+.carrossel {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 16px;
+}
+
+.carrossel::-webkit-scrollbar { display: none; }
+
+.parceiro {
+  flex: 0 0 100%;
+  scroll-snap-align: center;
+  background: var(--tinta);
+  color: #F2EEE2;
+  border-radius: 16px;
+  padding: 1.15rem;
+  position: relative;
+  overflow: hidden;
+  min-height: 100%;
+}
+
+/* Um telhado de canto: assina sem repetir o logo inteiro. */
+.parceiro::after {
   content: "";
   position: absolute;
   right: -40px;
@@ -160,34 +201,47 @@ a { color: inherit; }
   opacity: .13;
 }
 
-.anuncio__selo {
+.parceiro__topo {
+  display: flex;
+  align-items: center;
+  gap: .8rem;
+  margin-bottom: .55rem;
+}
+
+.parceiro__logo {
+  flex: 0 0 auto;
+  width: 54px;
+  height: 54px;
+  border-radius: 12px;
+  object-fit: cover;
+  background: var(--fundo);
+}
+
+.parceiro__selo {
+  margin: 0;
   font-family: var(--mono);
-  font-size: .64rem;
-  letter-spacing: .16em;
+  font-size: .62rem;
+  letter-spacing: .14em;
   text-transform: uppercase;
   color: #A9B6A8;
 }
 
-.anuncio__nome {
-  margin: .35rem 0 .1rem;
-  font-size: 1.6rem;
+.parceiro__nome {
+  margin: .1rem 0 0;
+  font-size: 1.45rem;
   font-weight: 800;
   letter-spacing: .02em;
-  display: flex;
-  align-items: center;
-  gap: .55rem;
+  line-height: 1.1;
 }
 
-.anuncio__nome svg { flex: 0 0 auto; }
-
-.anuncio__linha {
-  margin: .2rem 0 .9rem;
-  font-size: .95rem;
+.parceiro__chamada {
+  margin: 0 0 .95rem;
+  font-size: .94rem;
   color: #D9D4C5;
-  max-width: 44ch;
+  position: relative;
 }
 
-.anuncio__cta {
+.parceiro__cta {
   display: inline-flex;
   align-items: center;
   gap: .45rem;
@@ -199,17 +253,374 @@ a { color: inherit; }
   padding: .7rem 1.1rem;
   border-radius: 10px;
   min-height: 44px;
+  position: relative;
 }
 
-.anuncio__cta:hover { background: #D69C2C; }
+.parceiro__cta:hover { background: #D69C2C; }
 
-/* --------------------------------------------------------------- dados --- */
+.bolinhas {
+  display: flex;
+  justify-content: center;
+  gap: .4rem;
+  margin-top: .7rem;
+}
+
+.bolinha {
+  width: 34px;
+  height: 44px;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  position: relative;
+}
+
+.bolinha::after {
+  content: "";
+  position: absolute;
+  inset: 19px 10px;
+  border-radius: 999px;
+  background: var(--regua);
+  transition: background .2s, inset .2s;
+}
+
+.bolinha[aria-current="true"]::after {
+  background: var(--noite);
+  inset: 19px 4px;
+}
+
+/* ------------------------------------------------------------- botoes abas --- */
+/* ------------------------------------------------------- os dois botões --- */
+
+/* Os dois botões vivem dentro de uma cápsula, no meio da página. A cápsula
+   tem a largura do conteúdo — não a da tela — e o "margin: auto" dos lados é
+   o que centraliza. */
+.abas {
+  display: flex;
+  justify-content: center;
+  gap: .25rem;
+  width: fit-content;
+  max-width: 100%;
+  margin: 1.8rem auto .2rem;
+  padding: .3rem;
+  background: var(--papel);
+  border: 1px solid var(--regua);
+  border-radius: 999px;
+  box-shadow: var(--sombra);
+}
+
+.aba {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .42rem;
+  min-height: 44px;
+  padding: .5rem 1.2rem;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--tinta-fraca);
+  font-family: var(--sans);
+  font-size: .98rem;
+  font-weight: 650;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color .18s ease, color .18s ease;
+}
+
+.aba:hover:not([aria-selected="true"]) { color: var(--tinta); }
+
+/* O escolhido vira a pastilha escura; o outro fica só texto. Assim dá para
+   ver qual dos dois está aberto sem ler as duas palavras. */
+.aba[aria-selected="true"] {
+  background: var(--tinta);
+  color: #F5F1E6;
+  font-weight: 750;
+  box-shadow: 0 1px 2px rgba(23, 32, 28, .2);
+}
+
+.aba__conta {
+  font-family: var(--mono);
+  font-size: .7rem;
+  line-height: 1;
+  padding: .24rem .45rem;
+  border-radius: 999px;
+  background: var(--fundo);
+  color: var(--tinta-fraca);
+}
+
+.aba[aria-selected="true"] .aba__conta {
+  background: rgba(245, 241, 230, .18);
+  color: #F5F1E6;
+}
+
+/* Sem número — nenhuma festa cadastrada, por exemplo — a bolinha não deixa
+   um caroço vazio do lado do nome. */
+.aba__conta:empty { display: none; }
+
+/* O foco desenha a volta da cápsula inteira, não a do botão quadrado. */
+.aba:focus-visible { border-radius: 999px; }
+
+/* A seção escolhida começa logo abaixo dos botões, sem o respiro de sempre. */
+.abas + .secao { margin-top: 1.4rem; }
+
+/* O atributo hidden manda mais do que qualquer display daqui: sem esta
+   linha, uma seção escondida pelo javascript voltaria a aparecer. */
+[hidden] { display: none !important; }
+/* ---------------------------------------------------------------- seções --- */
+
+.secao { margin-top: 2.2rem; }
+
+.secao__titulo {
+  margin: 0;
+  font-size: 1.45rem;
+  font-weight: 800;
+  letter-spacing: -.01em;
+}
+
+.secao__nota {
+  margin: .25rem 0 .9rem;
+  color: var(--tinta-fraca);
+  font-size: .92rem;
+}
+
+/* ------------------------------------------------------ virar de página --- */
+
+/* A mesma cápsula dos dois botões de cima, agora com a contagem no meio: a
+   página inteira passa a ter um jeito só de dizer "escolha aqui". */
+.paginas {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .2rem;
+  width: fit-content;
+  max-width: 100%;
+  margin: 1.3rem auto .2rem;
+  padding: .3rem;
+  background: var(--papel);
+  border: 1px solid var(--regua);
+  border-radius: 999px;
+  box-shadow: var(--sombra);
+}
+
+.pagina {
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  min-height: 44px;
+  padding: .5rem .95rem;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--tinta);
+  font-family: var(--sans);
+  font-size: .9rem;
+  font-weight: 650;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color .16s ease, color .16s ease;
+}
+
+.pagina:hover:not(:disabled) {
+  background: var(--fundo);
+  color: var(--verde);
+}
+
+/* A seta se adianta um fio no passar do mouse — o empurrãozinho que diz para
+   que lado a lista vai andar. */
+.pagina > span[aria-hidden] {
+  font-size: 1.05em;
+  line-height: 1;
+  transition: transform .16s ease;
+}
+
+.pagina:hover:not(:disabled) > span[aria-hidden]:first-child { transform: translateX(-2px); }
+.pagina:hover:not(:disabled) > span[aria-hidden]:last-child  { transform: translateX(2px); }
+
+/* Botão apagado em vez de sumido: assim a fileira não dança de lugar a cada
+   virada de página, e continua claro que existe um começo e um fim. */
+.pagina:disabled {
+  opacity: .3;
+  cursor: default;
+}
+
+/* A contagem é uma etiqueta, não um botão. A largura mínima segura o texto
+   no lugar quando "1 de 4" vira "10 de 21". */
+.paginas__onde {
+  flex: 0 0 auto;
+  min-width: 7.5em;
+  padding: 0 .35rem;
+  font-family: var(--mono);
+  font-size: .72rem;
+  letter-spacing: .04em;
+  color: var(--tinta-fraca);
+  text-align: center;
+}
+
+/* Em tela bem estreita a cápsula aperta o cinto em vez de vazar para fora. */
+@media (max-width: 370px) {
+  .pagina { padding: .5rem .6rem; font-size: .86rem; }
+  .paginas__onde { min-width: 6.5em; padding: 0 .1rem; }
+}
+
+/* ---------------------------------------------------------------- festas --- */
+
+.linha-data {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: .5rem;
+  margin: .8rem 0 .2rem;
+}
+
+.rotulo-data {
+  font-family: var(--mono);
+  font-size: .72rem;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--tinta-fraca);
+}
+
+.linha-data__campos {
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+}
+
+.campo-data {
+  font-family: var(--sans);
+  font-size: .92rem;
+  padding: .5rem .7rem;
+  border: 1px solid var(--regua);
+  border-radius: 10px;
+  background: var(--papel);
+  color: var(--tinta);
+  min-height: 44px;
+}
+
+.limpar-data {
+  font-family: var(--mono);
+  font-size: .72rem;
+  background: none;
+  border: none;
+  color: var(--terracota);
+  cursor: pointer;
+  padding: .5rem;
+  min-height: 44px;
+}
+
+.festas {
+  list-style: none;
+  margin: .8rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: .6rem;
+}
+
+.festa {
+  display: flex;
+  gap: .9rem;
+  background: var(--papel);
+  border: 1px solid var(--regua);
+  border-left: 5px solid var(--cor, var(--terracota));
+  border-radius: 12px;
+  padding: .85rem .9rem;
+  box-shadow: var(--sombra);
+}
+
+/* O bloco da data lê como a folhinha de um calendário: o olho encontra o dia
+   antes de ler o nome da festa, que é como se procura festa. */
+.festa__data {
+  flex: 0 0 auto;
+  width: 52px;
+  text-align: center;
+  background: var(--fundo);
+  border-radius: 10px;
+  padding: .4rem .2rem .45rem;
+  align-self: flex-start;
+}
+
+.festa__semana,
+.festa__mes {
+  display: block;
+  font-family: var(--mono);
+  font-size: .62rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--tinta-fraca);
+}
+
+.festa__dia {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: 800;
+  line-height: 1.05;
+  color: var(--cor, var(--terracota));
+}
+
+.festa__corpo { flex: 1 1 auto; min-width: 0; }
+
+.festa__uni {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: .68rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--cor, var(--terracota));
+}
+
+.festa__hora { color: var(--tinta-fraca); }
+
+.festa__titulo {
+  margin: .15rem 0 .2rem;
+  font-size: 1.06rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.festa__descricao {
+  margin: 0 0 .6rem;
+  font-size: .88rem;
+  color: var(--tinta-fraca);
+}
+
+.festa__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .4rem;
+}
+
+.festa__link {
+  font-size: .82rem;
+  font-weight: 600;
+  text-decoration: none;
+  padding: .45rem .8rem;
+  border-radius: 8px;
+  border: 1px solid var(--regua);
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.festa__link--ingresso {
+  background: var(--cor, var(--terracota));
+  border-color: var(--cor, var(--terracota));
+  color: #FFFFFF;
+}
+
+.festa__link--perfil,
+.festa__link--grupo { background: var(--fundo); }
+
+.festa__link:hover { border-color: var(--cor, var(--terracota)); }
+
+/* ----------------------------------------------------------------- dados --- */
 
 .painel {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: .55rem;
-  margin: 1.1rem 0 0;
+  margin: 0 0 1rem;
 }
 
 .dado {
@@ -237,9 +648,7 @@ a { color: inherit; }
   line-height: 1.3;
 }
 
-/* --------------------------------------------------------------- busca --- */
-
-.filtros { margin: 1.4rem 0 0; }
+/* ----------------------------------------------------------------- busca --- */
 
 .busca {
   width: 100%;
@@ -259,10 +668,8 @@ a { color: inherit; }
   display: flex;
   gap: .4rem;
   overflow-x: auto;
-  padding: .7rem 0 .2rem;
+  padding: .7rem 16px .2rem;
   margin: 0 -16px;
-  padding-left: 16px;
-  padding-right: 16px;
   scrollbar-width: none;
 }
 
@@ -279,8 +686,7 @@ a { color: inherit; }
   color: var(--tinta-fraca);
   cursor: pointer;
   /* 44px é o tamanho mínimo de um alvo de toque que o polegar acerta sem
-     tentar duas vezes. Um chip pequeno numa lista de links é frustração
-     garantida. */
+     tentar duas vezes. */
   min-height: 44px;
 }
 
@@ -299,7 +705,7 @@ a { color: inherit; }
   color: var(--tinta-fraca);
 }
 
-/* --------------------------------------------------------------- lista --- */
+/* ----------------------------------------------------------------- lista --- */
 
 .lista {
   list-style: none;
@@ -329,6 +735,7 @@ a { color: inherit; }
 .grupo__texto { flex: 1 1 auto; min-width: 0; }
 
 .grupo__nome {
+  display: block;
   font-weight: 650;
   font-size: 1rem;
   line-height: 1.25;
@@ -380,11 +787,11 @@ a { color: inherit; }
 .vazio {
   text-align: center;
   color: var(--tinta-fraca);
-  padding: 2rem 1rem;
+  padding: 1.6rem 1rem;
   font-size: .95rem;
 }
 
-/* --------------------------------------------------------------- blocos --- */
+/* ---------------------------------------------------------------- blocos --- */
 
 .bloco {
   margin-top: 1.6rem;
@@ -442,7 +849,7 @@ a { color: inherit; }
   letter-spacing: .03em;
 }
 
-/* --------------------------------------------------------------- rodapé --- */
+/* ---------------------------------------------------------------- rodapé --- */
 
 .rodape {
   margin-top: 2.2rem;
@@ -463,12 +870,31 @@ a { color: inherit; }
   padding: 1.1rem 1rem 1.6rem;
 }
 
+.rodape__texto p { margin: 0 0 .5rem; }
+
 .rodape__texto a {
   color: #E8D9A8;
   display: inline-block;
   padding: .2rem 0;
 }
 
+.rodape__isencao { opacity: .75; margin-bottom: 0; }
+
+/* -------------------------------------------------------------- telas maiores --- */
+
 @media (min-width: 560px) {
   .grupo__nome { font-size: 1.05rem; }
+  .festa__data { width: 58px; }
+  .festa__titulo { font-size: 1.12rem; }
+}
+
+/* Quem pediu menos movimento no sistema vê a rua parada e o carrossel sem
+   deslizamento animado. */
+@media (prefers-reduced-motion: reduce) {
+  .carro-a,
+  .carro-b { animation: none; }
+  .carrossel { scroll-behavior: auto; }
+  .aba { transition: none; }
+  .pagina,
+  .pagina > span[aria-hidden] { transition: none; }
 }
