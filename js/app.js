@@ -99,6 +99,25 @@
     }
   }
 
+  /* A data em que a lista foi conferida. Vale para a tarja do alto e para
+     todo grupo que não trouxer uma data só dele. */
+  var LISTA_CONFERIDA = "";
+
+  if (typeof ajustes.listaConferidaEm !== "undefined" && ajustes.listaConferidaEm !== "") {
+    /* partesDaData é uma function declaration lá embaixo: o navegador já a
+       conhece aqui em cima, então dá para conferir a data agora mesmo. */
+    if (partesDaData(ajustes.listaConferidaEm)) {
+      LISTA_CONFERIDA = String(ajustes.listaConferidaEm);
+    } else {
+      reclamar(
+        "js/dados-textos.js",
+        'Em AJUSTES, listaConferidaEm está escrita como "' + ajustes.listaConferidaEm +
+        '". O formato é ano-mês-dia, assim: "2026-09-26". ' +
+        "Por enquanto a página está ignorando essa data."
+      );
+    }
+  }
+
   /* ---------------------------------------------------------------- datas */
 
   var MESES = ["jan", "fev", "mar", "abr", "mai", "jun",
@@ -129,10 +148,33 @@
     return { ano: ano, mes: mes, dia: dia, semana: d.getDay() };
   }
 
+  /* "2026-09-26" vira "26/set" — o formato curto do rodapé de cada card. */
+  function dataCurta(iso) {
+    var d = partesDaData(iso);
+    return d ? d.dia + "/" + MESES[d.mes - 1] : "";
+  }
+
+  /* "2026-09-26" vira "26/09/2026" — o formato da tarja do alto. */
+  function dataLonga(iso) {
+    var d = partesDaData(iso);
+    return d ? dois(d.dia) + "/" + dois(d.mes) + "/" + d.ano : "";
+  }
+
   /* ------------------------------------------------- conferências de item */
 
   function pareceLink(url) {
     return typeof url === "string" && /^https?:\/\/.+/.test(url.trim());
+  }
+
+  /* Os textos vêm dos arquivos de dados e entram na página como HTML. Um
+     "&" ou um "<" numa descrição quebraria o card em silêncio; aqui eles
+     viram texto comum e aparecem como a pessoa escreveu. */
+  function escapar(texto) {
+    return String(texto)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
   }
 
   var gruposBons = grupos.filter(function (g, i) {
@@ -153,6 +195,17 @@
         "As que existem são: " + Object.keys(categorias).join(", ") + "."
       );
       return false;
+    }
+
+    /* Data torta não derruba o grupo: ele aparece com a data geral da lista
+       e o aviso fica aqui para você arrumar quando puder. */
+    if (g.atualizado && !partesDaData(g.atualizado)) {
+      reclamar(
+        "js/dados-grupos.js",
+        'A data ' + onde + ' está escrita como "' + g.atualizado + '". ' +
+        'O formato é ano-mês-dia, assim: "2026-10-17". ' +
+        "Por enquanto esse card está mostrando a data geral da lista."
+      );
     }
     return true;
   });
@@ -614,6 +667,37 @@
       return n.toLocaleString("pt-BR");
     }
 
+    /* ---- o aviso de link quebrado ----
+       Link lotado ou revogado é o defeito mais comum de uma lista destas, e
+       quem descobre é sempre o visitante. O botão põe o nome do grupo na
+       mensagem: sem isso chega um "o link não funciona" sem dizer qual. */
+    var numeroAviso = contatos.whatsappSuporte || contatos.whatsappListas || "";
+
+    function botaoReportar(g) {
+      if (!numeroAviso) return "";
+
+      var modelo = textos.reportarMensagem ||
+                   "Oi! O link do grupo NOME está quebrado.";
+      var recado = modelo.replace("NOME", '"' + g.nome + '"');
+      var rotulo = (textos.reportarBotao || "Reportar link quebrado") +
+                   ' do grupo "' + g.nome + '"';
+
+      return (
+        '<a class="reportar" target="_blank" rel="noopener"' +
+          ' href="https://wa.me/' + numeroAviso + "?text=" + encodeURIComponent(recado) + '"' +
+          ' title="' + escapar(textos.reportarBotao || "Reportar link quebrado") + '"' +
+          ' aria-label="' + escapar(rotulo) + '">' +
+          '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" ' +
+               'stroke="currentColor" stroke-width="2" stroke-linecap="round" ' +
+               'aria-hidden="true" focusable="false">' +
+            '<path d="M9.5 17H7.5a5 5 0 0 1 0-10h2"/>' +
+            '<path d="M14.5 7h2a5 5 0 0 1 0 10h-2"/>' +
+            '<path d="M12 2.5v3M12 18.5v3"/>' +
+          "</svg>" +
+        "</a>"
+      );
+    }
+
     function cartao(g) {
       var c = categorias[g.cat];
       var etiqueta = "";
@@ -628,16 +712,38 @@
         membros = comPonto(g.membros) + " membros";
       }
 
+      /* A data do próprio grupo manda; sem ela, vale a data geral da lista. */
+      var quando = dataCurta(g.atualizado) || dataCurta(LISTA_CONFERIDA);
+      var conferido = quando
+        ? '<span class="grupo__quando">' +
+            escapar(textos.gruposConferido || "conferido em") + " " + quando +
+          "</span>"
+        : "<span></span>";
+
+      var desc = g.desc
+        ? '<span class="grupo__desc">' + escapar(g.desc) + "</span>"
+        : "";
+
+      /* A categoria e a contagem andam juntas com a bolinha: soltas, viram
+         itens separados do flex e a bolinha cai sozinha numa linha. */
+      var onde = '<span class="grupo__onde"><i class="ponto"></i>' +
+                 escapar(c.nome) + (membros ? " · " + membros : "") + "</span>";
+
+      /* O botão de reportar é irmão do link, nunca filho: botão dentro de
+         link é HTML inválido e o navegador desfaz a dupla do seu jeito. */
       return (
-        '<li><a class="grupo" style="--cor:' + c.cor + '" target="_blank" rel="noopener" href="' + g.url + '">' +
-          '<span class="grupo__texto">' +
-            '<span class="grupo__nome">' + g.nome + "</span>" +
-            '<span class="grupo__meta">' +
-              '<i class="ponto"></i>' + c.nome + (membros ? " · " + membros : "") + etiqueta +
+        '<li class="item" style="--cor:' + c.cor + '">' +
+          '<a class="grupo" target="_blank" rel="noopener" href="' + g.url + '">' +
+            '<span class="grupo__nome">' + escapar(g.nome) + "</span>" +
+            desc +
+            '<span class="grupo__meta">' + onde + etiqueta + "</span>" +
+            '<span class="grupo__rodape">' +
+              conferido +
+              '<span class="grupo__entrar" aria-hidden="true">entrar →</span>' +
             "</span>" +
-          "</span>" +
-          '<span class="grupo__entrar">entrar →</span>' +
-        "</a></li>"
+          "</a>" +
+          botaoReportar(g) +
+        "</li>"
       );
     }
 
@@ -779,6 +885,36 @@
   }
 
   /* ======================================================================
+     A DATA DA ÚLTIMA ATUALIZAÇÃO
+
+     A tarja do alto não é digitada à mão: ela olha a data geral da lista e
+     as datas soltas dos grupos e mostra a mais recente das três dezenas de
+     possibilidades. Assim, conferir um link já atualiza a página inteira.
+     ====================================================================== */
+
+  function montarDataDaLista() {
+    var tarja = document.getElementById("atualizado");
+    if (!tarja) return;
+
+    var maisNova = partesDaData(LISTA_CONFERIDA) ? LISTA_CONFERIDA : "";
+
+    gruposBons.forEach(function (g) {
+      if (!g.atualizado || !partesDaData(g.atualizado)) return;
+      /* Datas em ano-mês-dia se comparam como texto comum, e assim não há
+         fuso horário nenhum para atrapalhar. */
+      if (g.atualizado > maisNova) maisNova = g.atualizado;
+    });
+
+    if (!maisNova) {
+      tarja.hidden = true;
+      return;
+    }
+
+    tarja.textContent = (textos.atualizado || "Atualizada em") + " " + dataLonga(maisNova);
+    tarja.hidden = false;
+  }
+
+  /* ======================================================================
      O PAINEL DE NÚMEROS
      ====================================================================== */
 
@@ -893,6 +1029,7 @@
   var quantosGrupos = montarGrupos();
   montarAbas(quantosGrupos, quantasFestas);
 
+  montarDataDaLista();
   montarPainel();
   montarContatos();
   mostrarProblemas();

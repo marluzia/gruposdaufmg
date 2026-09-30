@@ -15,7 +15,10 @@ var TEXTOS = {
   tarja:      "Uma página oferecida por CEDER",
   titulo:     "Grupos da UFMG",
   subtitulo:  "Inciativa independente. Entre nas comunidades do seu interesse.",
-  atualizado: "Atualizada em 26/09/2026",
+
+  /* Só o começo da frase. A data vem sozinha dos AJUSTES, lá embaixo, para
+     você não ter que lembrar de mudar em dois lugares. */
+  atualizado: "Atualizada em",
 
   /* ---- Os dois botões que escolhem o que aparece ---- */
   abaGrupos: "Grupos",
@@ -33,9 +36,16 @@ var TEXTOS = {
 
   /* ---- A seção dos grupos ---- */
   gruposTitulo:    "Todos os grupos",
-  gruposSubtitulo: "Toque no grupo para entrar direto no WhatsApp.",
+  gruposSubtitulo: "Toque no grupo para entrar direto no WhatsApp. Link quebrado? Use o botão na beirada do card.",
   gruposBusca:     "Buscar grupo: república, bandeco, estágio…",
   gruposVazio:     "Nenhum grupo com esse nome. Tente outra palavra ou peça as outras listas mais abaixo.",
+  gruposConferido: "conferido em",
+
+  /* ---- O botão de avisar que um link parou de funcionar ----
+     Onde estiver escrito NOME, em letras grandes, a página troca pelo nome
+     do grupo em que a pessoa clicou. Deixe o NOME onde quiser na frase. */
+  reportarBotao:    "Reportar link quebrado",
+  reportarMensagem: "Oi! O link do grupo NOME está quebrado, vi na página dos Grupos da UFMG.",
 
   /* ---- O bloco das outras listas ---- */
   listasTitulo:   "Faltou alguma coisa?",
@@ -75,7 +85,14 @@ var AJUSTES = {
 
   /* Qual dos dois botões já vem apertado quando a página abre.
      Só duas respostas valem: "grupos" ou "festas". */
-  comecarEm: "grupos"
+  comecarEm: "grupos",
+
+  /* A data em que você conferiu a lista pela última vez, no formato
+     ano-mês-dia. Ela aparece em dois lugares de uma vez: na tarja do alto
+     da página e embaixo de cada grupo que não tiver uma data só dele.
+
+     Toda vez que der uma repassada nos links, é só trocar esta linha. */
+  listaConferidaEm: "2026-09-26"
 
 };
 

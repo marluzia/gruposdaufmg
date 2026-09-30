@@ -715,24 +715,85 @@ a { color: inherit; }
   gap: .55rem;
 }
 
-.grupo {
+/* O card é o conjunto: o link grande ocupa quase tudo, e o aviso de link
+   quebrado fica numa tira estreita na borda direita. O botão precisa ser
+   irmão do link, e não filho, porque botão dentro de link é HTML inválido. */
+.item {
   display: flex;
-  align-items: center;
-  gap: .85rem;
+  align-items: stretch;
   background: var(--papel);
   border: 1px solid var(--regua);
   border-left: 5px solid var(--cor, var(--verde));
   border-radius: 12px;
-  padding: .8rem .9rem;
+  box-shadow: var(--sombra);
+}
+
+.item:hover { border-color: var(--cor, var(--verde)); }
+
+/* O conteúdo empilha: nome, descrição, dados e, por último, a linha que
+   junta a data de conferência com o "entrar". Em coluna, a descrição usa a
+   largura inteira do card em vez de espremer entre dois blocos. */
+.grupo {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: .75rem .9rem;
+  border-radius: 11px 0 0 11px;
   text-decoration: none;
   color: inherit;
-  box-shadow: var(--sombra);
   min-height: 62px;
 }
 
-.grupo:hover { border-color: var(--cor, var(--verde)); background: #FEFDFA; }
+.grupo:hover { background: #FEFDFA; }
 
-.grupo__texto { flex: 1 1 auto; min-width: 0; }
+.grupo__desc {
+  display: block;
+  margin-top: .1rem;
+  font-size: .85rem;
+  line-height: 1.4;
+  color: var(--tinta-fraca);
+}
+
+.grupo__onde {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+}
+
+.grupo__rodape {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .6rem;
+  margin-top: .3rem;
+}
+
+/* ------------------------------------------------- reportar link quebrado --- */
+
+.reportar {
+  flex: 0 0 auto;
+  width: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-left: 1px solid var(--regua);
+  border-radius: 0 11px 11px 0;
+  color: #A8AFA8;
+  text-decoration: none;
+  transition: background-color .16s ease, color .16s ease;
+}
+
+/* Discreto até alguém precisar dele: quem está procurando grupo não deve
+   tropeçar num alerta vermelho em cada linha da lista. */
+.reportar:hover,
+.reportar:focus-visible {
+  background: #F6E4E1;
+  color: var(--terracota);
+}
+
+.reportar svg { display: block; }
 
 .grupo__nome {
   display: block;
@@ -743,7 +804,7 @@ a { color: inherit; }
 }
 
 .grupo__meta {
-  margin-top: .15rem;
+  margin-top: .25rem;
   font-size: .78rem;
   color: var(--tinta-fraca);
   display: flex;
@@ -772,10 +833,19 @@ a { color: inherit; }
 .etiqueta--lotado { background: #F6E4E1; color: var(--terracota); }
 .etiqueta--novo   { background: #E4F0E9; color: var(--verde); }
 
+/* Quando este grupo foi conferido pela última vez. Fica no fim da linha e
+   em letra menor: é informação de confiança, não de destaque. */
+.grupo__quando {
+  font-family: var(--mono);
+  font-size: .66rem;
+  letter-spacing: .03em;
+  color: #8A938C;
+}
+
 .grupo__entrar {
   flex: 0 0 auto;
   font-family: var(--mono);
-  font-size: .72rem;
+  font-size: .7rem;
   letter-spacing: .08em;
   text-transform: uppercase;
   color: var(--verde);
@@ -895,6 +965,7 @@ a { color: inherit; }
   .carro-b { animation: none; }
   .carrossel { scroll-behavior: auto; }
   .aba { transition: none; }
+  .reportar { transition: none; }
   .pagina,
   .pagina > span[aria-hidden] { transition: none; }
 }

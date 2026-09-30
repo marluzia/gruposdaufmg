@@ -57,7 +57,7 @@ A faixa avisa sobre:
 - grupo ou festa sem nome
 - link vazio ou escrito errado
 - categoria ou universidade que não existe
-- data fora do formato
+- data fora do formato, tanto a geral quanto a de um grupo só
 
 ---
 
@@ -65,18 +65,74 @@ A faixa avisa sobre:
 
 ### Acrescentar um grupo
 
-Abra `js/dados-grupos.js`, copie uma linha inteira, cole embaixo e troque as
-informações.
+Abra `js/dados-grupos.js`, copie um bloco inteiro — as três linhas — cole
+embaixo e troque as informações.
 
 ```js
-{ nome: "Estágios 4", membros: 0, cat: "trabalho", url: "https://chat.whatsapp.com/XXXX" },
+{ nome: "Estágios 4", membros: 0, cat: "trabalho",
+  desc: "Vagas de estágio abertas para quem ainda está na graduação.",
+  url: "https://chat.whatsapp.com/XXXX" },
 ```
 
 Em `membros` você pode pôr o número, ou `"lotado"` (com aspas), ou `0` para
 grupo recém-criado. A etiqueta na página muda sozinha.
 
+O `desc` é a frase que aparece embaixo do nome, dizendo para que serve o
+grupo. Uma linha e meia é o tamanho certo — o card não corta, ele cresce, e
+com três linhas a lista fica pesada de novo. Deixe `""` e o card fica só com
+o nome.
+
 Os números do painel — quantos grupos, quantos membros, a média — são contados
 pela própria página. Você não precisa atualizar nada.
+
+> **As descrições que vieram prontas são um rascunho.** Foram escritas a
+> partir do nome e da categoria de cada grupo. Leia com calma e ajuste o que
+> não bater com o que o grupo é de verdade.
+
+### Mudar a data de atualização
+
+Fica em `js/dados-textos.js`, no bloco `AJUSTES`:
+
+```js
+listaConferidaEm: "2026-09-26",
+```
+
+Formato ano-mês-dia, o mesmo das festas. Essa data aparece em **dois lugares
+de uma vez**: na tarjinha embaixo do título da página e no rodapé de cada
+card, naquele "conferido em 26/set". Toda vez que você repassar os links, é
+só trocar esta linha.
+
+Se você conferiu **um grupo só** — reabriu um link solto e viu que ainda
+funciona — dá para dar a ele uma data própria, sem mexer na geral:
+
+```js
+{ nome: "Estágios 4", membros: 0, cat: "trabalho",
+  desc: "Vagas de estágio abertas para quem ainda está na graduação.",
+  atualizado: "2026-10-17",
+  url: "https://chat.whatsapp.com/XXXX" },
+```
+
+Aquele card passa a mostrar 17/out, e os outros continuam com a data geral.
+A tarjinha do alto mostra sempre a mais recente de todas.
+
+### O botão de reportar link quebrado
+
+Cada card tem, na beirada direita, um botãozinho de corrente partida. Quem
+tocar nele cai no WhatsApp com a mensagem já escrita e o **nome do grupo
+dentro dela** — sem isso chega um "o link não funciona" sem dizer qual.
+
+O número que recebe esses avisos é o `whatsappSuporte`, no fim do
+`js/dados-textos.js`. Se quiser que caiam no outro número, troque ali.
+
+Para mudar a frase, em `TEXTOS`:
+
+```js
+reportarMensagem: "Oi! O link do grupo NOME está quebrado, vi na página dos Grupos da UFMG.",
+```
+
+Onde estiver escrito `NOME`, em letras grandes, a página troca pelo nome do
+grupo em que a pessoa clicou. Você pode mover o `NOME` para outro lugar da
+frase, mas não traduza nem mude essas quatro letras.
 
 ### Acrescentar uma festa
 
@@ -115,6 +171,10 @@ campo `logo`. Imagem quadrada fica melhor.
 
 Tudo em `js/dados-textos.js`. Troque o texto entre aspas e salve. A palavra da
 esquerda não pode mudar.
+
+Uma exceção: o `atualizado` agora guarda só o começo da frase
+(`"Atualizada em"`). A data vem sozinha dos `AJUSTES`, para você não ter que
+lembrar de mudar em dois lugares.
 
 ### Mudar quantos itens aparecem por página
 
